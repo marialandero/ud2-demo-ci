@@ -1,5 +1,6 @@
 // Importamos la librería Express
 const express = require('express');
+const morgan = require('morgan');
 // Importamos nuestras funciones de la calculadora
 const { sumar, restar } = require('./calculadora');
 
@@ -8,6 +9,18 @@ const app = express();
 // Definimos el puerto. Render nos lo dará en una variable de entorno,
 // si no, usamos el 3000 para local.
 const PORT = process.env.PORT || 3000;
+
+// Usamos 'morgan' con el formato 'combined' (estándar Apache)
+// Esto registrará automaticamente: IP, fecha, método, URL, estado, usser-agent
+app.use(morgan('combined'));
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'UP',
+    timestamp: new Date(),
+    uptime: process.uptime() // Segundos que lleva encendido el servidor
+  })
+})
 
 // Definimos una ruta "Home" (/)
 app.get('/', (req, res) => {
